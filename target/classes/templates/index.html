@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+
+    <title>Home</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" ></script>
+  </head>
+  <body>
+    <header th:insert="fragments :: header"></header>
+    <br/>
+    <br/>
+    <br/>
+
+    <div class="page-content page-container " id="page-content" style="display: block;
+  margin-left: 70px;
+  margin-right: 80px;
+  width: 85%;">
+      <div class="padding">
+        <div>
+          <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
+            <span th:text="${error}" ></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+
+          <div class="col-md-8 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Customers</h4>
+                <p class="card-description">
+                  Lists of all the customers
+                </p>
+                <div class=>
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th >Name</th>
+                      <th>Surname</th>
+                      <th colspan="3">Date of Birth</th>
+                      <th colspan="3" >Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="myTable">
+                    <tr th:each="customer : ${customers}">
+                      <td th:text="${customer.fullNames}"></td>
+                      <td th:text="${customer.surname}"></td>
+                      <td colspan="3" th:text="${customer.dob}"></td>
+                      <td><a th:href="@{|/customer/${customer.id}|}"> <button type="button" class="btn btn-info">Log in</button></a></td>
+                      <td>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" th:attr="data-target='#recordDeleteModal'+${customer.id}">Delete</button>
+                        <!-- Modal -->
+                        <div class="modal fade" th:attr="id='recordDeleteModal'+${customer.id}" tabindex="-1" aria-labelledby="recordDeleteModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="recordDeleteModalLabel">Delete Record</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                Are you sure you want to delete this Customer?
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                <a th:href="@{|/customer/delete/${customer.id}|}"> <button type="button" class="btn btn-danger">Yes</button></a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Modal end -->
+
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center pager" id="myPager">
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer th:insert="fragments :: footer"></footer>
+
+    <script th:src="@{Script.js}"></script>
+
+
+  </body>
+</html>

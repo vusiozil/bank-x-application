@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="utf-8">
+    <title>Edit Customer</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/styles/table.css}" >
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css"  crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+    <style>
+         .linkStyle{
+      text-decoration: none;
+    }
+
+    .linkStyle:hover {
+      text-decoration: none;
+    }
+    .linkStyle>*:hover {
+         cursor: pointer;
+    }
+    </style>
+
+</head>
+<body>
+
+<header th:insert="fragments :: header"></header>
+
+<div class="container  rounded bg-white mt-5 mb-5">
+
+    <div class="row" >
+        <div class="w-100">
+            <div class="alert alert-success alert-dismissible fade show" th:if="${success}" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" role="alert">
+                <span th:text="${error}" ></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-2 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                <span th:text="${customer.fullNames} +' '+ ${customer.surname}" class="font-weight-bold">Vusi Ozil</span>
+                <span th:text="${customer.email}" class="text-black-50">email@example.com</span><span> </span>
+            </div>
+            <div class="row mt-2">
+                <button type="button" class="btn w-85 btn-outline-primary" data-toggle="modal" th:attr="data-target='#transferModal'+${customer.id}"><i class="bi bi-arrow-left-right  bi-lg text-white"></i>Transfer Money</button>
+                <!-- Modal -->
+                <div class="modal fade" th:attr="id='transferModal'+${customer.id}" tabindex="-1" aria-labelledby="transferModalModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="transferModalModalLabel">Transfer Money</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="transferForm" role="form" action="#" th:object="${handleInputs}" th:action="@{|/banking/transfer/${customer.id}|}"
+                                      method="POST">
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="inputGroupSelect01">From</label>
+                                            </div>
+                                            <select th:field="*{from}" class="custom-select" id="inputGroupSelect01">
+                                                <option  value="Savings Account">Savings Account</option>
+                                                <option  value="Current Account">Current Account</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="inputGroupSelect02">To</label>
+                                            </div>
+                                            <select th:field="*{to}" class="custom-select" id="inputGroupSelect02">
+                                                <option  value="Savings Account">Savings Account</option>
+                                                <option  value="Current Account">Current Account</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label mt-4">Amount</label>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text">R</span>
+                                                <input min="00.01" type="number" step="0.01" th:field="*{amount}" required="required" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Transfer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        </div>
+                    </div>
+            </div>
+            <div class="row mt-3">
+                <button type="button" class="btn w-75 btn-outline-primary" data-toggle="modal" th:attr="data-target='#payModal'+${customer.id}"><i class="bi bi-people bi-lg text-white"></i> Pay</button>
+                <div class="modal fade" th:attr="id='payModal'+${customer.id}" tabindex="-1" aria-labelledby="payModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="payModalLabel">Pay</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="payForm" role="form" action="#" th:object="${details}" th:action="@{|/banking/pay/${customer.id}|}"
+                                      method="POST">
+
+                                    <div class="form-group">
+                                        <label for="AccountNumber">Account Number</label>
+                                        <input type="text" th:field="*{accountNumber}" class="form-control" id="AccountNumber" required="required"
+                                               aria-describedby="Bank" placeholder="Enter Account Number">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Bank">Bank Name</label>
+                                        <input type="text"  th:field="*{bankName}" class="form-control" id="Bank" required="required"
+                                               aria-describedby="Bank" placeholder="Enter bank ,eg Bank X">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="AccountType">Account Type</label>
+                                        <select th:field="*{accountType}" class="custom-select" id="AccountType"  required="required">
+                                            <option  value="Savings Account">Savings Account</option>
+                                            <option  value="Current Account">Current Account</option>
+                                        </select>
+                                    </div>
+
+                                     <div class="form-group">
+                                        <label class="form-label mt-4">Amount</label>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text">R</span>
+                                                <input required="required" min="00.01" step="0.01" type="number" th:field="*{amount}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleTextarea" class="form-label mt-4">Statement description</label>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                            <textarea  th:field="*{description}" class="form-control" id="exampleTextarea" required="required" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Pay</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 border-right">
+            <div class="p-3 py-5">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Personal Accounts</h4>
+                </div>
+
+                <div class="mt-5 text-center">
+                    <a class="linkStyle" th:href="@{|/account/currentAccount/${currentAccount.accountNumber}|}" data-toggle="tooltip"  title="click to view transactions !">
+                        <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+                            <div class="card-header "><h4>Current Account</h4></div>
+                            <div class="card-body">
+                                <div class="row mt-2">
+                                    <p class="card-text">Account Number <span th:text="${currentAccount.accountNumber}" >123458</span></p>
+                                </div>
+                                <div class="row mt-2">
+                                    <p class="card-text">Available Balance R<span   th:text="${#numbers.formatDecimal(currentAccount.balance, 1, 'DEFAULT', 2, 'DEFAULT')}" >5000</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a class="linkStyle" th:href="@{|/account/savingsAccount/${savingsAccount.accountNumber}|}" data-toggle="tooltip"  title="click to view transactions !">
+                        <div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
+                            <div class="card-header"><h4>Savings Account</h4></div>
+                            <div class="card-body">
+                                <div class="row mt-2">
+                                    <p class="card-text">Account Number <span th:text="${savingsAccount.accountNumber}">526333444</span></p>
+                                </div>
+                                <div class="row mt-2">
+                                    <p class="card-text">Available Balance R<span th:text="${#numbers.formatDecimal(savingsAccount.balance, 1, 'DEFAULT', 2, 'DEFAULT')}">5000</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="p-3 py-5">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Last Transactions</h4>
+                </div>
+
+                <div class="mt-5 text-center">
+
+                    <table class="table w-100 table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th colspan="3" scope="col">Date</th>
+                            <th colspan="2" scope="col">From Account</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transaction,index : ${transactions}">
+                            <td th:text="${index.count}"></td>
+                            <td colspan="3" th:text="${transaction.createdAt}"></td>
+                            <td colspan="2" th:text="${transaction.fromAccount}"></td>
+                            <td  th:text="${transaction.description}"></td>
+                            <td th:if="${#strings.equalsIgnoreCase(transaction.transactionType.toString(), 'WITHDRAWAL')}" th:text="'-R'+${#numbers.formatDecimal(transaction.amount, 1, 'DEFAULT', 2, 'DEFAULT')}"></td>
+                            <td th:if="${#strings.equalsIgnoreCase(transaction.transactionType.toString(), 'DEPOSIT')}" th:text="'R'+${#numbers.formatDecimal(transaction.amount, 1, 'DEFAULT', 2, 'DEFAULT')}"></td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<br>
+
+<footer th:insert="fragments :: footer"></footer>
+<script src="loader.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="loader.css" />
+    <title>Home</title>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+
+    <style>
+        .form-container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .form-container>.form-group{
+            width: 50%;
+
+        }
+    </style>
+</head>
+<body>
+<header th:insert="fragments :: header"></header>
+<br>
+<br>
+
+
+<div class="container">
+    <div class="row  justify-content-center">
+
+        <h3  th:text="${account}">Account Name</h3>
+       <br>
+       <br>
+       <br>
+        <ul class="list-group w-100">
+            <li th:each="transaction : ${transactions}"  class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1" th:text="${transaction.description}">Live Better Round-up Transfer</h5>
+                    <small th:text="${transaction.createdAt}">3 days ago</small>
+                </div>
+                <br>
+                <p class="mb-1 text-red">R400.</p>
+    <!--                <small>And some small print.</small>-->
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+<footer th:insert="fragments :: footer"></footer>
+<script src="loader.js"></script>
+
+</body>
+</html>
